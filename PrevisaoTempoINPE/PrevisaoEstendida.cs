@@ -1,20 +1,22 @@
-﻿/*  +=====================================================================================================+
-    | Obtenção de previsão do tempo à partir do Instituro Nacional de Pesquisas Espaciais (INPE)          |
-    | Desenvolvido por Carlos Ribeiro (https://github.com/carlosribeiro1987)                              |
-    | Distribuído sob a Licença GPLv3.0                                                                   |
-    +=====================================================================================================+  */
+﻿/*  +======================================================================================================+
+    | Obtenção de previsão do tempo à partir dos XMLs do Instituro Nacional de Pesquisas Espaciais (INPE)  |
+    | Desenvolvido por Carlos Ribeiro (https://github.com/carlosribeiro1987)                               |
+    | Distribuído sob a Licença GPLv3.0                                                                    |
+    +======================================================================================================+
 
-/*  +=====================================================================================================+
-    | PREVISÃO PRÓXIMOS SETE DIAS - Extraído do site do INPE (http://servicos.cptec.inpe.br/XML/)         |
-    +=====================================================================================================+
-    | A resposta da requisição da Previsão de tempo para 7 dias tem como retorno as informações           |
-    | acerca da previsão de tempo para os próximos 7 dias (pode variar de acordo com o horário do dia,    |
-    | podendo apresentar a previsão para o dia atual e os próximos 6 dias) para a localidade escolhida.   |
-    | Os elementos do 1º nível do arquivo XML apresentam informações sobre o município ou localidade      |
-    | selecionado(a) e o horário de atualização dos dados da previsão. O conjunto de elementos 'previsao' |
-    | dispõe os dados da previsão de tempo para cada dia, dispondo a condição de tempo, as temperaturas   |
-    | máxima e miníma e o IUV.                                                                            |
-    +=====================================================================================================+  */
+    +======================================================================================================+
+    | PREVISÃO EXTENDIDA - Extraído do site do INPE (http://servicos.cptec.inpe.br/XML/)                   |
+    +======================================================================================================+
+    | Os dados da Previsão de tempo estendida do CPTEC/INPE está disponível para todos os munípios         |
+    | brasileiros e outros locais que têm importância econômica ou turística no qual o CPTEC/INPE cobre    |
+    | com a previsão de tempo. A previsão estendida é estimada automaticamente pelo modelo numérico        |
+    | Ensemble, que faz uma previsão para os 7 dias posteriores aos 7 próximos dias previstos pelos        |
+    | meteorologistas. Ou seja, é uma previsão que alcança 2 semanas após o dia atual. Para realizar a     |
+    | requisição desses dados se faz necessário conhecer o código do município ou localidade que se deseja |
+    | consultar. O código do município ou localidade que são cobertos pelo CPTEC/INPE é representado por   |
+    | um número inteiro positivo, no qual recomendamos o uso do mecanismo de Busca de localidades para o   |
+    | levantamento desta informação.                                                                       |
+    +======================================================================================================+  */
 
 using System;
 using System.Linq;
@@ -23,7 +25,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace PrevisaoTempoINPE {
-    public class PrevisaoSeteDias {
+    class PrevisaoEstendida {
         private DateTime[] dataPrev;
         private DateTime atualizacao;
         private int[] maxima, minima;
@@ -37,8 +39,8 @@ namespace PrevisaoTempoINPE {
         /// Obtém dados da previsão do tempo no site do Instituto Nacional de Pesquisas Eespaciais (INPE)
         /// </summary>
         /// <param name="codLocalidade">Um valor inteiro representando o código de localidade</param>
-        public PrevisaoSeteDias(int codLocalidade) {
-            pathXml = string.Format("http://servicos.cptec.inpe.br/XML/cidade/7dias/{0}/previsao.xml", codLocalidade);
+        public PrevisaoEstendida(int codLocalidade) {
+            pathXml = string.Format("http://servicos.cptec.inpe.br/XML/cidade/{0}/estendida.xml", codLocalidade);
             try {
                 WebRequest request = WebRequest.Create(pathXml);
                 request.Timeout = 5000;
@@ -71,33 +73,33 @@ namespace PrevisaoTempoINPE {
                 int i = 0;
                 foreach (var xml in previsoes) {
                     dataPrev[i] = Convert.ToDateTime(string.Format("{0}/{1}/{2}", xml.dia.Substring(8, 2), xml.dia.Substring(5, 2), xml.dia.Substring(0, 4)));
-                    indUV[i] = Convert.ToDecimal(xml.iuv.Replace('.',','));
+                    indUV[i] = Convert.ToDecimal(xml.iuv.Replace('.', ','));
                     maxima[i] = Convert.ToInt16(xml.max);
                     minima[i] = Convert.ToInt16(xml.min);
                     switch (xml.tempo) {
-                        case "ec":  tempoPrev[i] = "Encoberto com Chuvas Isoladas"; break;
-                        case "ci":  tempoPrev[i] = "Chuvas Isoladas"; break;
-                        case "c":   tempoPrev[i] = "Chuva"; break;
-                        case "in":  tempoPrev[i] = "Instável"; break;
-                        case "pp":  tempoPrev[i] = "Possibilidade de Pancadas de Chuva"; break;
-                        case "cm":  tempoPrev[i] = "Chuva pela Manhã"; break;
-                        case "cn":  tempoPrev[i] = "Chuva a Noite"; break;
-                        case "pt":  tempoPrev[i] = "Pancadas de Chuva a Tarde"; break;
-                        case "pm":  tempoPrev[i] = "Pancadas de Chuva pela Manhã"; break;
-                        case "np":  tempoPrev[i] = "Nublado e Pancadas de Chuva"; break;
-                        case "pc":  tempoPrev[i] = "Pancadas de Chuva"; break;
-                        case "pn":  tempoPrev[i] = "Parcialmente Nublado"; break;
-                        case "cv":  tempoPrev[i] = "Chuvisco"; break;
-                        case "ch":  tempoPrev[i] = "Chuvoso"; break;
-                        case "t":   tempoPrev[i] = "Tempestade"; break;
-                        case "ps":  tempoPrev[i] = "Predomínio de Sol"; break;
-                        case "e":   tempoPrev[i] = "Encoberto"; break;
-                        case "n":   tempoPrev[i] = "Nublado"; break;
-                        case "cl":  tempoPrev[i] = "Céu Claro"; break;
-                        case "nv":  tempoPrev[i] = "Nevoeiro"; break;
-                        case "g":   tempoPrev[i] = "Geada"; break;
-                        case "ne":  tempoPrev[i] = "Neve"; break;
-                        case "nd":  tempoPrev[i] = "Não Definido"; break;
+                        case "ec": tempoPrev[i] = "Encoberto com Chuvas Isoladas"; break;
+                        case "ci": tempoPrev[i] = "Chuvas Isoladas"; break;
+                        case "c": tempoPrev[i] = "Chuva"; break;
+                        case "in": tempoPrev[i] = "Instável"; break;
+                        case "pp": tempoPrev[i] = "Possibilidade de Pancadas de Chuva"; break;
+                        case "cm": tempoPrev[i] = "Chuva pela Manhã"; break;
+                        case "cn": tempoPrev[i] = "Chuva a Noite"; break;
+                        case "pt": tempoPrev[i] = "Pancadas de Chuva a Tarde"; break;
+                        case "pm": tempoPrev[i] = "Pancadas de Chuva pela Manhã"; break;
+                        case "np": tempoPrev[i] = "Nublado e Pancadas de Chuva"; break;
+                        case "pc": tempoPrev[i] = "Pancadas de Chuva"; break;
+                        case "pn": tempoPrev[i] = "Parcialmente Nublado"; break;
+                        case "cv": tempoPrev[i] = "Chuvisco"; break;
+                        case "ch": tempoPrev[i] = "Chuvoso"; break;
+                        case "t": tempoPrev[i] = "Tempestade"; break;
+                        case "ps": tempoPrev[i] = "Predomínio de Sol"; break;
+                        case "e": tempoPrev[i] = "Encoberto"; break;
+                        case "n": tempoPrev[i] = "Nublado"; break;
+                        case "cl": tempoPrev[i] = "Céu Claro"; break;
+                        case "nv": tempoPrev[i] = "Nevoeiro"; break;
+                        case "g": tempoPrev[i] = "Geada"; break;
+                        case "ne": tempoPrev[i] = "Neve"; break;
+                        case "nd": tempoPrev[i] = "Não Definido"; break;
                         case "pnt": tempoPrev[i] = "Pancadas de Chuva a Noite"; break;
                         case "psc": tempoPrev[i] = "Possibilidade de Chuva"; break;
                         case "pcm": tempoPrev[i] = "Possibilidade de Chuva pela Manhã"; break;
@@ -110,8 +112,8 @@ namespace PrevisaoTempoINPE {
                         case "ncm": tempoPrev[i] = "Nublado com Possibilidade de Chuva pela Manhã"; break;
                         case "npm": tempoPrev[i] = "Nublado com Pancadas pela Manhã"; break;
                         case "npp": tempoPrev[i] = "Nublado com Possibilidade de Chuva"; break;
-                        case "vn":  tempoPrev[i] = "Variação de Nebulosidade"; break;
-                        case "ct":  tempoPrev[i] = "Chuva a Tarde"; break;
+                        case "vn": tempoPrev[i] = "Variação de Nebulosidade"; break;
+                        case "ct": tempoPrev[i] = "Chuva a Tarde"; break;
                         case "ppn": tempoPrev[i] = "Possibilidade de Pancadas de Chuva a Noite"; break;
                         case "ppt": tempoPrev[i] = "Possibilidade de Pancadas de Chuva a Tarde"; break;
                         case "ppm": tempoPrev[i] = "Possibilidade de Pancadas de Chuva pela Manhã"; break;
@@ -121,7 +123,7 @@ namespace PrevisaoTempoINPE {
                 }
                 sucesso = true;
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 string a = e.Message;
                 sucesso = false;
             }

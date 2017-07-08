@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuscaLocalidades.cs" />
+    <Compile Include="PrevisaoQuatroDias.cs" />
     <Compile Include="PrevisaoSeteDias.cs" />
+    <Compile Include="PrevisaoEstendida.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

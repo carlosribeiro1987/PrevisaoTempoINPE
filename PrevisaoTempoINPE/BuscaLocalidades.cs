@@ -1,9 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*  +=====================================================================================================+
+    | Obtenção de previsão do tempo à partir do Instituro Nacional de Pesquisas Espaciais (INPE)          |
+    | Desenvolvido por Carlos Ribeiro (https://github.com/carlosribeiro1987)                              |
+    | Distribuído sob a Licença GPLv3.0                                                                   |
+    +=====================================================================================================+
+
+    +=====================================================================================================+
+    | BUSCA DE LOCALIDADES - Extraído do site do INPE (http://servicos.cptec.inpe.br/XML/)                |
+    +=====================================================================================================+
+    | A resposta da requisição de Busca de localidades traz informações acerca da(s) localidade(s)        |
+    | desejada(s), tal como seu nome, a UF que essa(s) localidade(s) pertence(m) e o código da(s)         |
+    | localidade(s). A resposta vem no formato de um arquivo em XML puro.                                 |
+    +=====================================================================================================+  */
+
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -55,7 +65,6 @@ namespace PrevisaoTempoINPE {
             catch {
                 sucesso = false;
             }
-
         }
         public string[] Cidades {
             get { return cidades; }

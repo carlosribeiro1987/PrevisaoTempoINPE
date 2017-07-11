@@ -22,7 +22,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace PrevisaoTempoINPE {
-    class PrevisaoQuatroDias {
+    public class PrevisaoQuatroDias {
         private DateTime[] dataPrev;
         private DateTime atualizacao;
         private int[] maxima, minima;
@@ -128,50 +128,56 @@ namespace PrevisaoTempoINPE {
         /// <summary>
         /// Indica se a obtenção dos dados foi bem sucedida ou não
         /// </summary>
-        bool ObtevePrevisao {
+        public bool ObtevePrevisao {
             get { return sucesso; }
         }
         /// <summary>
         /// Nome da cidade à qual os dados correspondem
         /// </summary>
-        string Cidade {
+        public string Cidade {
             get { return cidade; }
         }
         /// <summary>
         /// Estado onde a cidade está localizada
         /// </summary>
-        string Estado {
+        public string Estado {
             get { return estado; }
         }
         /// <summary>
         /// Data da última atualização da previsão do tempo
         /// </summary>
-        DateTime DataAtualizacao {
+        public DateTime DataAtualizacao {
             get { return atualizacao; }
         }
         /// <summary>
         /// Array com os valores máximos de temperatura
         /// </summary>
-        int[] TemperaturaMaxima {
+        public int[] TemperaturaMaxima {
             get { return maxima; }
         }
         /// <summary>
         /// Array com os valores mínimos de temperatura
         /// </summary>
-        int[] TemperaturaMinima {
+        public int[] TemperaturaMinima {
             get { return minima; }
         }
         /// <summary>
         /// Array com os valores dos índices Ultra-Violeta
         /// </summary>
-        decimal[] IndiceUV {
+        public decimal[] IndiceUV {
             get { return indUV; }
         }
         /// <summary>
         /// Array com o tempo previsto
         /// </summary>
-        string[] TempoPrevisto {
+        public string[] TempoPrevisto {
             get { return tempoPrev; }
+        }
+        /// <summary>
+        /// Array com as datas das previsões
+        /// </summary>
+        public DateTime[] DataPrevisao {
+            get { return dataPrev; }
         }
     }
 }

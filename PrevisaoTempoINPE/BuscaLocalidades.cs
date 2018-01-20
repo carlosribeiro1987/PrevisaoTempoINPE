@@ -12,13 +12,15 @@
     | localidade(s). A resposta vem no formato de um arquivo em XML puro.                                 |
     +=====================================================================================================+  */
 
+using System;
 using System.Linq;
 using System.Net;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace PrevisaoTempoINPE {
-    public class BuscaLocalidades {
+    public class BuscaLocalidades : IDisposable {
+ 
         private string[] cidades, estados, codigos;
         string pathXml = string.Empty;
         private bool sucesso;
@@ -66,6 +68,14 @@ namespace PrevisaoTempoINPE {
                 sucesso = false;
             }
         }
+
+        public void Dispose() {
+            cidades = null;
+            pathXml = null;
+            estados = null;
+            sucesso = false;
+        }
+
         public string[] Cidades {
             get { return cidades; }
         }

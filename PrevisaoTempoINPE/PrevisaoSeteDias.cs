@@ -23,7 +23,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace PrevisaoTempoINPE {
-    public class PrevisaoSeteDias {
+    public class PrevisaoSeteDias : IDisposable {
         private DateTime[] dataPrev;
         private DateTime atualizacao;
         private int[] maxima, minima;
@@ -126,6 +126,19 @@ namespace PrevisaoTempoINPE {
                 sucesso = false;
             }
         }
+        public void Dispose() {
+            dataPrev = null;
+            atualizacao = DateTime.MinValue;
+            maxima = null;
+            minima = null;
+            indUV = null;
+            tempoPrev = null;
+            estado = null;
+            cidade = null;
+            sucesso = false;
+            pathXml = null;
+    }
+
         /// <summary>
         /// Indica se a obtenção dos dados foi bem sucedida ou não
         /// </summary>

@@ -37,7 +37,7 @@ namespace PrevisaoTempoINPE {
         /// </summary>
         /// <param name="codLocalidade">Um valor inteiro representando o código de localidade</param>
         public PrevisaoQuatroDias(int codLocalidade) {
-            pathXml = string.Format("http://servicos.cptec.inpe.br/XML/cidade/7dias/{0}/previsao.xml", codLocalidade);
+            pathXml = string.Format("http://servicos.cptec.inpe.br/XML/cidade/{0}/previsao.xml", codLocalidade);
             try {
                 WebRequest request = WebRequest.Create(pathXml);
                 request.Timeout = 5000;

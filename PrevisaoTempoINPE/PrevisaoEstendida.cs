@@ -25,11 +25,10 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace PrevisaoTempoINPE {
-    class PrevisaoEstendida : IDisposable{
+    public class PrevisaoEstendida : IDisposable{
         private DateTime[] dataPrev;
         private DateTime atualizacao;
         private int[] maxima, minima;
-        private decimal[] indUV;
         private string[] tempoPrev;
         private string estado, cidade;
         private bool sucesso;
@@ -68,12 +67,10 @@ namespace PrevisaoTempoINPE {
                 tempoPrev = new string[qtd];
                 maxima = new int[qtd];
                 minima = new int[qtd];
-                indUV = new decimal[qtd];
 
                 int i = 0;
                 foreach (var xml in previsoes) {
                     dataPrev[i] = Convert.ToDateTime(string.Format("{0}/{1}/{2}", xml.dia.Substring(8, 2), xml.dia.Substring(5, 2), xml.dia.Substring(0, 4)));
-                    indUV[i] = Convert.ToDecimal(xml.iuv.Replace('.', ','));
                     maxima[i] = Convert.ToInt16(xml.max);
                     minima[i] = Convert.ToInt16(xml.min);
                     switch (xml.tempo) {
@@ -134,7 +131,6 @@ namespace PrevisaoTempoINPE {
             atualizacao = DateTime.MinValue;
             maxima = null;
             minima = null;
-            indUV = null;
             tempoPrev = null;
             estado = null;
             cidade = null;
@@ -177,12 +173,6 @@ namespace PrevisaoTempoINPE {
         /// </summary>
         public int[] TemperaturaMinima {
             get { return minima; }
-        }
-        /// <summary>
-        /// Array com os valores dos índices Ultra-Violeta
-        /// </summary>
-        public decimal[] IndiceUV {
-            get { return indUV; }
         }
         /// <summary>
         /// Array com o tempo previsto
